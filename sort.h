@@ -3,11 +3,54 @@
 #include <algorithm>
 #include <string>
 #include <iterator>
+
+#include <vector>
+
 #include "log_duration.h"
+
+#include <iostream>
 
 namespace sort {
 
 namespace functions{
+
+// Quick sort, algorithm of Choar sorting
+template <typename Iterator, typename Comparator>
+void QuickSort(Iterator begin, Iterator end, Comparator comp) {
+    size_t size = std::distance(begin, end);
+    
+    if(size < 2) {
+        return;
+    }
+
+    Iterator pivot = begin;
+
+    std::vector<typename std::iterator_traits<Iterator>::value_type> less_elements;
+    std::vector<typename std::iterator_traits<Iterator>::value_type> greater_elements;
+
+    for(Iterator iter = begin; iter != end; ++iter) {
+        if(iter == pivot) {
+            continue;
+        }
+        if(comp(*iter, *pivot)) {
+            less_elements.push_back(*iter);
+        } else {
+            greater_elements.push_back(*iter);
+        }
+    }
+
+    QuickSort(less_elements.begin(), less_elements.end(), comp);
+    QuickSort(greater_elements.begin(), greater_elements.end(), comp);
+
+    *(begin + less_elements.size()) = *pivot;
+    for(Iterator iter = less_elements.begin(); iter != less_elements.end(); ++iter, ++begin) {
+        *begin = *iter;
+    }
+    ++begin;
+    for(Iterator iter = greater_elements.begin(); iter != greater_elements.end(); ++iter, ++begin) {
+        *begin = *iter;
+    }
+}
 
 // Bubble sorting
 template <typename Iterator, typename Comparator>
@@ -78,14 +121,15 @@ void SortByInserts(Iterator begin, Iterator end, Comparator comp) {
 
 }// namespace functions
 
-
 enum class SortType {
+    QUICK_SORT,
     BUBBLE_SORT,
     INSERT_SORT,
     CHOICE_SORT
 };
 
-static const SortType all[] = {SortType::BUBBLE_SORT, SortType::INSERT_SORT, SortType::CHOICE_SORT};
+static const SortType all[] = {SortType::QUICK_SORT, SortType::BUBBLE_SORT,
+     SortType::INSERT_SORT, SortType::CHOICE_SORT};
 
 namespace detail {
 std::string ToString(SortType type);
@@ -97,6 +141,9 @@ void Sort(Iterator begin, Iterator end, Comparator comp,
     using namespace functions;
     
     switch (sort_type) {
+        case SortType::QUICK_SORT:
+        QuickSort(begin, end, comp);
+        break;
         case SortType::BUBBLE_SORT:
         BubbleSort(begin, end, comp);
         break;

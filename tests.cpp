@@ -56,6 +56,13 @@ void TestSorting() {
         assert(sort_vector == sorted_vec);
     }
 
+    {
+        std::vector<int> sort_vector = vec;
+        QuickSort(sort_vector.begin(), sort_vector.end(), comp);
+        
+        assert(sort_vector == sorted_vec);
+    }
+
     using namespace std::literals;
     std::cout << "Testing ...OK"s <<std::endl;
 }
