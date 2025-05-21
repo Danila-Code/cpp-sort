@@ -14,42 +14,37 @@ namespace sort {
 
 namespace functions{
 
-// Quick sort, algorithm of Choar sorting
+// Quick sort, algorithm of Choar sorting in place
 template <typename Iterator, typename Comparator>
 void QuickSort(Iterator begin, Iterator end, Comparator comp) {
-    size_t size = std::distance(begin, end);
-    
-    if(size < 2) {
+    if(std::distance(begin, end) < 2) {
         return;
     }
 
     Iterator pivot = begin;
+    auto n = *pivot;
+    Iterator iter = begin;
+    Iterator iter2 = end - 1;
 
-    std::vector<typename std::iterator_traits<Iterator>::value_type> less_elements;
-    std::vector<typename std::iterator_traits<Iterator>::value_type> greater_elements;
-
-    for(Iterator iter = begin; iter != end; ++iter) {
-        if(iter == pivot) {
+    while(iter <= iter2) {
+        if(comp(*iter, n)) {
+            ++iter;
             continue;
         }
-        if(comp(*iter, *pivot)) {
-            less_elements.push_back(*iter);
-        } else {
-            greater_elements.push_back(*iter);
+        if(!comp(*iter2, n)) {
+            --iter2;
+            continue;
         }
+        std::swap(*iter, *iter2);
+        if(pivot == iter) {
+            pivot = iter2;
+        }
+        ++iter;
+        --iter2;
     }
-
-    QuickSort(less_elements.begin(), less_elements.end(), comp);
-    QuickSort(greater_elements.begin(), greater_elements.end(), comp);
-
-    *(begin + less_elements.size()) = *pivot;
-    for(Iterator iter = less_elements.begin(); iter != less_elements.end(); ++iter, ++begin) {
-        *begin = *iter;
-    }
-    ++begin;
-    for(Iterator iter = greater_elements.begin(); iter != greater_elements.end(); ++iter, ++begin) {
-        *begin = *iter;
-    }
+    std::swap(*pivot, *iter);
+    QuickSort(begin, iter, comp);
+    QuickSort(iter + 1, end, comp);
 }
 
 // Bubble sorting

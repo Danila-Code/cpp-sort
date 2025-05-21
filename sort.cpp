@@ -21,5 +21,4 @@ std::string ToString(SortType type) {
     return {};
 }
 }// namespace detail
-
 }// namespace sort

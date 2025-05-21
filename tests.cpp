@@ -27,7 +27,7 @@ void TestSorting() {
     using namespace sort::functions;
     using namespace detail;
 
-    const size_t size = 10;
+    const size_t size = 100;
     std::vector<int> vec = FillVector(size);
     std::vector<int> sorted_vec = vec;
 
@@ -55,7 +55,6 @@ void TestSorting() {
         
         assert(sort_vector == sorted_vec);
     }
-
     {
         std::vector<int> sort_vector = vec;
         QuickSort(sort_vector.begin(), sort_vector.end(), comp);
